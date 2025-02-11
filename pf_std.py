@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import datetime
+from pandas.tseries.offsets import BusinessDay
 
 from prepare_df import prepare_portfolio_df
 
@@ -39,10 +41,14 @@ def calculate_portfolio_std(weights, std_devs, correlations):
 # Example usage
 if __name__ == "__main__":
     # Example weights, standard deviations, and correlation matrix
-    tickers = {"UUP": 0.25, "JPY=X": 0, "IBIT": .05, "XLU": 0.0, "XLF": 0.0, "XLC":0.0, "XLY":0, "GLD": .20, "SPY": .25, "SHY": .25, "USDCNY=X": 0}
+    tickers = {"UUP": 0.25, "JPY=X": 0, "IBIT": .05, "XLU": 0.1, "XLF": 0.0, "XLC":0.0, "XLY":0, "GLD": .20, "SPY": .2, "SHY": .2, "USDCNY=X": 0}
     tickers = {ticker:weight for ticker, weight in tickers.items() if weight > 0}
     print(tickers)
-    df = prepare_portfolio_df("2025-01-01", pd.to_datetime("2025-01-14"), tickers)
+    
+    end = datetime.date.today()
+    start = end - datetime.timedelta(days=89) - BusinessDay(1)
+    print(end, start, sep="-")
+    df = prepare_portfolio_df(start=start, end=end, tickers=tickers, base=1)
     # print(df.columns)
 
     weights = [w for w in tickers.values()]
